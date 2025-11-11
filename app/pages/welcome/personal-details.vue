@@ -4,8 +4,12 @@ definePageMeta({
   layout: 'welcome-flow'
 })
 
-const { currentStep } = useStepper()
+// Import composables
+const { currentStep, canGoNext, canGoPrevious, nextStep, previousStep } = useStepper()
+const { formData, validateProfile, validateWorkspace, updateProfile, updateWorkspace } = useFormData()
 
+
+// Stepper configuration
 const stepperItems = [
   {
     title: 'Faison connaissance',
@@ -21,10 +25,38 @@ const stepperItems = [
     disabled: true
   }
 ]
+
+// Navigation handlers
+const handleNext = () => {
+  if (currentStep.value === 0 && validateProfile()) {
+    nextStep()
+  }
+}
+
+const handlePrevious = () => {
+  previousStep()
+}
+
+const handleSubmit = () => {
+  if (validateWorkspace()) {
+    console.log('Form submitted:', formData.value)
+    // TODO: Handle form submission (API call, navigation, etc.)
+    alert('Formulaire soumis avec succès!')
+  }
+}
+
+// Computed validation state
+const isCurrentStepValid = computed(() => {
+  if (currentStep.value === 0) {
+    return validateProfile()
+  }
+  return validateWorkspace()
+})
 </script>
 
 <template>
   <div class="max-w-7xl mx-auto bg-white rounded-2xl py-10 px-20">
+    <!-- Stepper -->
     <UStepper
       v-model="currentStep"
       :items="stepperItems"
@@ -34,18 +66,41 @@ const stepperItems = [
       class="w-full mb-8"
     />
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Column - Main Form Content -->
-      <div class="lg:col-span-2">
-        <!-- Form content will go here -->
-        <div class="text-gray-500">Main form content placeholder</div>
+    <!-- Content: Two Column Layout (Form Left, Sidebar Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Left Column - Form Steps -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Profile Step -->
+        <ProfileStep
+          v-if="currentStep === 0"
+          :model-value="formData.profile"
+          @update:model-value="updateProfile"
+        />
+
+        <!-- Workspace Step -->
+        <WorkspaceStep
+          v-else-if="currentStep === 1"
+          :model-value="formData.workspace"
+          @update:model-value="updateWorkspace"
+        />
+        <!-- Navigation -->
+        <StepperNavigation
+          :can-go-previous="canGoPrevious"
+          :can-go-next="canGoNext"
+          :current-step="currentStep"
+          :is-valid="isCurrentStepValid"
+          @previous="handlePrevious"
+          @next="handleNext"
+          @submit="handleSubmit"
+        />
       </div>
 
-      <!-- Right Column - Sidebar Preview -->
+      <!-- Right Column - Sidebar -->
       <div class="lg:col-span-1">
-        <!-- Sidebar preview will go here -->
-        <div class="text-gray-500">Sidebar preview placeholder</div>
+        <SettingSidebar
+          :form-data="formData"
+          :current-step="currentStep"
+        />
       </div>
     </div>
   </div>

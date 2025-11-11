@@ -24,11 +24,11 @@ export const useFormData = () => {
     })
 
     const updateProfile = (data: Partial<ProfileFormData>) => {
-      formData.value.profile = { ...formData.value.profile, ...data }
+      Object.assign(formData.value.profile, data)
     }
 
     const updateWorkspace = (data: Partial<WorkspaceFormData>) => {
-      formData.value.workspace = { ...formData.value.workspace, ...data }
+      Object.assign(formData.value.workspace, data)
     }
 
     const validateProfile = () => {
