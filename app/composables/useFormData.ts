@@ -32,13 +32,14 @@ export const useFormData = () => {
     }
 
     const validateProfile = () => {
-      const { firstName, lastName, email } = formData.value.profile
-      return !!(firstName && lastName && email)
+      // const { firstName, lastName, email } = formData.value.profile
+      // return !!(firstName && lastName && email)
+      return true
     }
 
     const validateWorkspace = () => {
-      const { name, description, websiteURL, address, sector } = formData.value.workspace
-      return !!(name && description && websiteURL && address && sector)
+      const { name } = formData.value.workspace
+      return !!name
     }
 
     const resetForm = () => {

@@ -47,7 +47,6 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
         <UFormField
           label="Prénom"
           name="firstName"
-          required
         >
           <UInput
             v-model="localData.firstName"
@@ -61,7 +60,6 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
         <UFormField
           label="Nom"
           name="lastName"
-          required
         >
           <UInput
             v-model="localData.lastName"
@@ -74,7 +72,6 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
         <UFormField
           label="Adresse email"
           name="email"
-          required
         >
           <UInput
             v-model="localData.email"

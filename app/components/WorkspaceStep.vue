@@ -42,7 +42,9 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
         <UFormField
           label="Nom de l'entreprise"
           name="name"
-          required
+          :ui="{
+            label: 'after:content-[\'*\'] after:ml-1 after:text-neutral-700'
+          }"
         >
           <UInput
             v-model="localData.name"
@@ -57,7 +59,6 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
         <UFormField
           label="Description de l'entreprise"
           name="description"
-          required
         >
           <UTextarea
             v-model="localData.description"
@@ -72,7 +73,6 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
         <UFormField
           label="Site internet"
           name="websiteURL"
-          required
         >
           <UInput
             v-model="localData.websiteURL"
@@ -80,15 +80,15 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
             placeholder="votre-entreprise.com"
             class="w-full"
             :ui="{
-              base: 'pl-14.5',
-              leading: 'pointer-events-none'
+              base: 'pl-18',
+              leading: 'pointer-events-none bg-neutral-50 border border-gray-200 rounded-l-md px-2'
             }"
             @input="updateField('websiteURL', localData.websiteURL)"
           >
             <template #leading>
-              <p class="text-sm text-muted">
+              <span class="text-sm text-muted">
                 https://
-              </p>
+              </span>
             </template>
           </UInput>
         </UFormField>
@@ -97,7 +97,6 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
         <UFormField
           label="Adresse du siège social"
           name="address"
-          required
         >
           <UInput
             v-model="localData.address"
@@ -111,7 +110,6 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
         <UFormField
           label="Secteur d'activité"
           name="sector"
-          required
         >
           <UInput
             v-model="localData.sector"

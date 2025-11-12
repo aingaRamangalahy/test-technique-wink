@@ -14,15 +14,12 @@ const emit = defineEmits<{
 }>()
 
 const isLastStep = computed(() => props.currentStep === 1)
-const buttonLabel = computed(() => isLastStep.value ? 'Terminer' : 'Continuer')
 </script>
 
 <template>
   <div class="mt-6 pt-6">
-    <div class="grid grid-cols-3 gap-4">
+    <div class="flex justify-between items-center w-full gap-4">
       <!-- Previous Button -->
-      <div class="col-span-1">
-        
       <UButton
         v-if="canGoPrevious"
         label="Retour"
@@ -31,18 +28,14 @@ const buttonLabel = computed(() => isLastStep.value ? 'Terminer' : 'Continuer')
         color="neutral"
         @click="emit('previous')"
       />
-      <div v-else />
-      </div>
-
       <!-- Next/Submit Button -->
-      <div class="col-span-2 flex justify-center">
-        <UButton
-          :label="buttonLabel"
-          color="primary"
-          :disabled="!isValid"
-          @click="isLastStep ? emit('submit') : emit('next')"
-        />
-      </div>
+      <UButton
+        label="Continuer"
+        :disabled="!isValid"
+        class="flex-1 justify-center"
+        color="primary"
+        @click="isLastStep ? emit('submit') : emit('next')"
+      />
     </div>
   </div>
 </template>
