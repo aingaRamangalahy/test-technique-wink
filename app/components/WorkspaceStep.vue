@@ -26,8 +26,11 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="{ root: 'ring-0' }">
     <div class="space-y-6">
+      <div class="flex items-center gap-4">
+        <p class="text-2xl font-medium">Créez votre espace de travail</p>
+      </div>
       <!-- Workspace Logo Upload -->
       <ImageUpload
         image-type="workspace"

@@ -30,8 +30,11 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="{ root: 'ring-0' }" >
     <div class="space-y-6">
+      <div class="flex items-center gap-4">
+        <p class="text-2xl font-medium">Faisons connaissance</p>
+      </div>
        <!-- Profile Image Upload -->
       <ImageUpload
         image-type="profile"

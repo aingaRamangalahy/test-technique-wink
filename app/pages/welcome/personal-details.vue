@@ -55,7 +55,7 @@ const isCurrentStepValid = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto bg-white rounded-2xl py-10 px-20">
+  <div class="max-w-7xl mx-auto bg-white rounded-2xl py-10 pl-20 pr-0">
     <!-- Stepper -->
     <UStepper
       v-model="currentStep"
@@ -67,7 +67,7 @@ const isCurrentStepValid = computed(() => {
     />
 
     <!-- Content: Two Column Layout (Form Left, Sidebar Right) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-30">
       <!-- Left Column - Form Steps -->
       <div class="lg:col-span-1 space-y-6">
         <!-- Profile Step -->
@@ -97,7 +97,7 @@ const isCurrentStepValid = computed(() => {
 
       <!-- Right Column - Sidebar -->
       <div class="lg:col-span-1">
-        <SettingSidebar
+        <PreviewSidebar
           :form-data="formData"
           :current-step="currentStep"
         />
