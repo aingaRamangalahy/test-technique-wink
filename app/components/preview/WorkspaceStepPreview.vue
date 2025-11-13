@@ -15,29 +15,32 @@ const logoUrl = computed(() => {
 </script>
 
 <template>
-  <BaseStepPreview>
+  <BaseStepPreview step-type="workspace">
     <template #sidebar-top>
-      <!-- Company Info On Top -->
-      <div v-if="companyName" class="mb-4 pb-3 border-b border-neutral-200">
-        <div class="flex items-center gap-3">
+      <!-- Company Info Under Bottom Icons -->
+      <div v-if="companyName" class="absolute top-0 left-[-11%] w-[300px] p-2 border border-primary drop-shadow drop-shadow-primary-100 rounded-md bg-white z-2">
+        <div class="flex items-center gap-3 justify-between">
           <div class="shrink-0">
-            <UAvatar
+            <div
               v-if="logoUrl"
-              :src="logoUrl"
-              :alt="companyName"
-              size="sm"
-            />
-            <UAvatar
+              class="w-8 h-8 rounded border border-neutral-200 overflow-hidden flex items-center justify-center"
+            >
+              <img :src="logoUrl" :alt="companyName" class="w-full h-full object-cover">
+            </div>
+            <div
               v-else
-              :alt="companyName"
-              size="sm"
-            />
+              class="w-8 h-8 rounded border border-neutral-200 bg-neutral-100 flex items-center justify-center"
+            >
+              <span class="text-xs font-semibold text-neutral-600">{{ companyName.charAt(0).toUpperCase() }}</span>
+            </div>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold text-gray-900 truncate">
+            <p class="text-xs font-medium text-gray-900 truncate">
               {{ companyName }}
             </p>
           </div>
+          <UIcon name="i-lucide-settings" class="w-3 h-3 text-neutral-400" />
+          <UIcon name="i-lucide-chevrons-up-down" class="w-3 h-3 text-neutral-400" />
         </div>
       </div>
     </template>

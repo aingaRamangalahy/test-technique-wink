@@ -19,7 +19,7 @@ defineProps<{
         </div>
       </template>
       <!-- Top Icons -->
-      <div class="flex flex-col gap-3 flex-1">
+      <div class="flex flex-col gap-3 flex-1" :class="{ 'mt-14': stepType && stepType === 'workspace' }">
         <div class="flex items-center gap-3">
           <UIcon name="i-lucide-layout-dashboard" class="w-3 h-3 text-neutral-400 shrink-0" />
           <USkeleton class="h-2 w-20 rounded" />
@@ -43,7 +43,7 @@ defineProps<{
       </div>
       
       <!-- Bottom Icons -->
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-3" :class="{ 'mb-10': stepType && stepType === 'profile' }">
         <div class="flex items-center gap-3">
           <UIcon name="i-lucide-user-plus" class="w-3 h-3 text-neutral-400 shrink-0" />
           <USkeleton class="h-2 w-20 rounded" />

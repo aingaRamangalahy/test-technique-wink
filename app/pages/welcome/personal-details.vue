@@ -67,7 +67,7 @@ const isCurrentStepValid = computed(() => {
     />
 
     <!-- Content: Two Column Layout (Form Left, Sidebar Right) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-30">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-40">
       <!-- Left Column - Form Steps -->
       <div class="lg:col-span-1 space-y-6">
         <!-- Profile Step -->
