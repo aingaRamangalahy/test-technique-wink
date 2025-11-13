@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import StepUserProfile from '~/components/step/UserProfile.vue'
 import StepCompanyWorkspace from '~/components/step/CompanyWorkspace.vue'
+import StepSummaryInformation from '~/components/step/SummaryInformation.vue'
 
 // Apply the welcome-flow layout
 definePageMeta({
@@ -11,6 +12,8 @@ definePageMeta({
 const { currentStep, canGoNext, canGoPrevious, nextStep, previousStep } = useStepper()
 const { formData, validateProfile, validateWorkspace, updateProfile, updateWorkspace } = useFormData()
 
+// Dialog state
+const isDialogOpen = ref(false)
 
 // Stepper configuration
 const stepperItems = [
@@ -43,8 +46,9 @@ const handlePrevious = () => {
 const handleSubmit = () => {
   if (validateWorkspace()) {
     console.log('Form submitted:', formData.value)
-    // TODO: Handle form submission (API call, navigation, etc.)
-    alert('Formulaire soumis avec succès!')
+    // Show success dialog with summary
+    isDialogOpen.value = true
+    // TODO: Handle form submission (API call, etc.)
   }
 }
 
@@ -106,6 +110,44 @@ const isCurrentStepValid = computed(() => {
         />
       </div>
     </div>
+
+    <!-- Success Dialog -->
+    <UModal
+      v-model:open="isDialogOpen"
+      title="Félicitations !"
+      :ui="{
+        content: 'max-w-2xl'
+      }"
+    >
+      <template #header>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+            <UIcon name="i-lucide-check-circle" class="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">
+              Félicitations, vos informations ont été sauvegardées avec succès
+            </h2>
+          </div>
+        </div>
+      </template>
+
+      <template #body>
+        <StepSummaryInformation :form-data="formData" />
+      </template>
+
+      <template #footer="{ close }">
+        <div class="flex justify-end gap-3">
+          <UButton
+            color="primary"
+            size="lg"
+            @click="close"
+          >
+            Fermer
+          </UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
