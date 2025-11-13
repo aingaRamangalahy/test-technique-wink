@@ -15,10 +15,10 @@ const logoUrl = computed(() => {
 </script>
 
 <template>
-  <BaseStepPreview step-type="workspace">
+  <PreviewBaseLayout step-type="workspace">
     <template #sidebar-top>
       <!-- Company Info Under Bottom Icons -->
-      <div v-if="companyName" class="absolute top-0 left-[-11%] w-[300px] p-2 border border-primary drop-shadow drop-shadow-primary-100 rounded-md bg-white z-2">
+      <div class="absolute top-0 left-[-11%] w-[300px] p-2 border border-primary drop-shadow drop-shadow-primary-100 rounded-md bg-white z-2">
         <div class="flex items-center gap-3 justify-between">
           <div class="shrink-0">
             <div
@@ -44,6 +44,6 @@ const logoUrl = computed(() => {
         </div>
       </div>
     </template>
-  </BaseStepPreview>
+  </PreviewBaseLayout>
 </template>
 

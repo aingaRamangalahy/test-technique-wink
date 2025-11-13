@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import StepUserProfile from '~/components/step/UserProfile.vue'
+import StepCompanyWorkspace from '~/components/step/CompanyWorkspace.vue'
+
 // Apply the welcome-flow layout
 definePageMeta({
   layout: 'welcome-flow'
@@ -70,20 +73,19 @@ const isCurrentStepValid = computed(() => {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-40">
       <!-- Left Column - Form Steps -->
       <div class="lg:col-span-1 space-y-6">
-        <!-- Profile Step -->
-        <ProfileStep
-          v-if="currentStep === 0"
-          :model-value="formData.profile"
-          @update:model-value="updateProfile"
-        />
-
-        <!-- Workspace Step -->
-        <WorkspaceStep
-          v-else-if="currentStep === 1"
-          :model-value="formData.workspace"
-          @update:model-value="updateWorkspace"
-          @previous="handlePrevious"
-        />
+        <KeepAlive :include="['StepUserProfile', 'StepCompanyWorkspace']">
+          <StepUserProfile
+            v-if="currentStep === 0"
+            :model-value="formData.profile"
+            @update:model-value="updateProfile"
+          />
+          <StepCompanyWorkspace
+            v-else-if="currentStep === 1"
+            :model-value="formData.workspace"
+            @update:model-value="updateWorkspace"
+            @previous="handlePrevious"
+          />
+        </KeepAlive>
         <!-- Navigation -->
         <StepperNavigation
           :can-go-previous="canGoPrevious"
@@ -98,7 +100,7 @@ const isCurrentStepValid = computed(() => {
 
       <!-- Right Column - Sidebar -->
       <div class="lg:col-span-1">
-        <PreviewSidebar
+        <PreviewPanel
           :form-data="formData"
           :current-step="currentStep"
         />

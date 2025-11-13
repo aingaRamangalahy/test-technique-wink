@@ -38,7 +38,7 @@ const goBack = () => {
         <p class="text-2xl font-medium">Créez votre espace de travail</p>
       </div>
       <!-- Workspace Logo Upload -->
-      <ImageUpload
+      <SharedImageUpload
         image-type="workspace"
         label="Logo de l'entreprise"
         :model-value="localData.logo"

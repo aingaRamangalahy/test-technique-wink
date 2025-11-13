@@ -40,7 +40,7 @@ const handleFileSelect = (event: Event) => {
       return
     }
     
-    // Create preview
+    // Create preview immediately for better UX
     const reader = new FileReader()
     reader.onload = (e) => {
       previewUrl.value = e.target?.result as string

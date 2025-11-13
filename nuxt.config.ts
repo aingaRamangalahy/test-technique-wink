@@ -6,12 +6,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/ui'],
   css: ['./app/assets/css/main.css'],
-  components: [
-    {
-      path: '~/components',
-      pathPrefix: false,
-    },
-  ],
+  // components: [
+  //   {
+  //     path: '~/components',
+  //     pathPrefix: false,
+  //   },
+  // ],
   vite: {
     plugins: [ tailwindcss()]
   },

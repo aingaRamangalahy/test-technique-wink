@@ -36,7 +36,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
         <p class="text-2xl font-medium">Faisons connaissance</p>
       </div>
        <!-- Profile Image Upload -->
-      <ImageUpload
+      <SharedImageUpload
         image-type="profile"
         :user-name="fullName"
         label="Photo de profil"

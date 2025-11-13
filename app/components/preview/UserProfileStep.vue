@@ -15,10 +15,10 @@ const imageUrl = computed(() => {
 </script>
 
 <template>
-  <BaseStepPreview step-type="profile">
+  <PreviewBaseLayout step-type="profile">
     <template #sidebar-bottom>
       <!-- User Info Under Bottom Icons -->
-      <div v-if="userName" class="absolute bottom-0 left-[-8%] w-[250px] p-2 border border-primary drop-shadow drop-shadow-primary-100 rounded-md bg-white z-2 mt-10">
+      <div class="absolute bottom-0 left-[-8%] w-[250px] p-2 border border-primary drop-shadow drop-shadow-primary-100 rounded-md bg-white z-2 mt-10">
         <div class="flex items-center gap-3 justify-between">
           <div class="shrink-0">
             <UAvatar
@@ -42,6 +42,6 @@ const imageUrl = computed(() => {
         </div>
       </div>
     </template>
-  </BaseStepPreview>
+  </PreviewBaseLayout>
 </template>
 

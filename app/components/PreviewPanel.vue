@@ -23,14 +23,14 @@ const isWorkspaceStep = computed(() => props.currentStep === 1)
       <!-- Preview Content -->
       <div class="h-[500px]">
         <!-- Profile Step Preview -->
-        <ProfileStepPreview
+        <PreviewUserProfileStep
           v-if="isProfileStep"
           :user-name="fullName"
           :user-image="formData.profile.profileImage"
         />
 
         <!-- Workspace Step Preview -->
-        <WorkspaceStepPreview
+        <PreviewCompanyWorkspaceStep
           v-else-if="isWorkspaceStep"
           :company-name="formData.workspace.name"
           :company-image="formData.workspace.logo"
