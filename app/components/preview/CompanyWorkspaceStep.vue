@@ -23,9 +23,9 @@ const logoUrl = computed(() => {
           <div class="shrink-0">
             <div
               v-if="logoUrl"
-              class="w-8 h-8 rounded border border-neutral-200 overflow-hidden flex items-center justify-center"
+              class="w-8 h-8 rounded border border-neutral-200 overflow-hidden flex items-center justify-center bg-white"
             >
-              <img :src="logoUrl" :alt="companyName" class="w-full h-full object-cover">
+              <img :src="logoUrl" :alt="companyName" class="w-full h-full object-contain">
             </div>
             <div
               v-else

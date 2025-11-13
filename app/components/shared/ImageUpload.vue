@@ -4,9 +4,14 @@ interface Props {
   label: string
   userName?: string
   modelValue?: File | null
+  disabled?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  userName: undefined,
+  modelValue: null
+})
 const emit = defineEmits<{
   'update:modelValue': [value: File | null]
 }>()
@@ -19,6 +24,25 @@ watch(
   () => props.userName,
   (newName) => {
     displayName.value = newName ?? ''
+  },
+  { immediate: true }
+)
+
+// Watch for modelValue changes and update preview
+watch(
+  () => props.modelValue,
+  (newFile) => {
+    if (newFile) {
+      // Create preview from the new file
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        previewUrl.value = e.target?.result as string
+      }
+      reader.readAsDataURL(newFile)
+    } else {
+      // Clear preview if no file
+      previewUrl.value = null
+    }
   },
   { immediate: true }
 )
@@ -40,13 +64,7 @@ const handleFileSelect = (event: Event) => {
       return
     }
     
-    // Create preview immediately for better UX
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      previewUrl.value = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-    
+    // Emit the file - the watcher will handle preview creation
     emit('update:modelValue', file)
   }
 }
@@ -56,7 +74,7 @@ const triggerFileInput = () => {
 }
 
 const removeImage = () => {
-  previewUrl.value = null
+  // Emit null - the watcher will handle clearing the preview
   emit('update:modelValue', null)
   if (fileInput.value) {
     fileInput.value.value = ''
@@ -89,7 +107,7 @@ const hasImage = computed(() => !!previewUrl.value || !!props.modelValue)
           v-if="previewUrl"
           :src="previewUrl"
           :alt="label"
-          :class="['w-full h-full object-cover', avatarClass]"
+          :class="['w-full h-full object-contain', avatarClass]"
         >
         <div v-else-if="imageType === 'profile' && displayName">
           <UAvatar
@@ -114,11 +132,12 @@ const hasImage = computed(() => !!previewUrl.value || !!props.modelValue)
             icon="i-lucide-upload"
             variant="outline"
             color="neutral"
+            :disabled="props.disabled"
             @click="triggerFileInput"
           />
           
           <UButton
-            :disabled="!hasImage"
+            :disabled="!hasImage || props.disabled"
             label="Supprimer"
             variant="outline"
             color="neutral"

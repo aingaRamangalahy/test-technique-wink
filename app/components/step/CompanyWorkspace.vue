@@ -28,6 +28,148 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
 const goBack = () => {
   emit('previous')
 }
+
+// Brandfetch integration
+const { fetchCompanyData, downloadImageAsFile, getBestLogo, extractDomain, error: brandfetchError } = useBrandfetch()
+const toast = useToast()
+const isFetching = ref(false)
+const fetchSuccess = ref(false)
+const urlInputRef = ref<HTMLInputElement | null>(null)
+
+const handleUrlKeydown = async (event: KeyboardEvent) => {
+  if (event.key === 'Enter' && canFetch.value) {
+    await fetchBrandData()
+  }
+}
+
+// Clear all data except URL
+const clearFormData = () => {
+  const currentUrl = localData.value.websiteURL
+  updateField('name', '')
+  updateField('description', '')
+  updateField('address', '')
+  updateField('sector', '')
+  updateField('logo', null)
+  updateField('websiteURL', currentUrl)
+}
+
+const fetchBrandData = async () => {
+  if (!localData.value.websiteURL || isFetching.value) return
+  
+  isFetching.value = true
+  fetchSuccess.value = false
+  
+  try {
+    const domain = extractDomain(localData.value.websiteURL)
+    
+    if (!domain) {
+      clearFormData()
+      toast.add({
+        title: 'URL invalide',
+        description: 'Veuillez entrer une URL de site web valide',
+        color: 'error',
+        icon: 'i-lucide-alert-circle'
+      })
+      return
+    }
+
+    // Clear form data before fetching new data
+    clearFormData()
+
+    const data = await fetchCompanyData(domain)
+    if (data) {
+      // Update company name
+      if (data.name) {
+        updateField('name', data.name)
+      }
+      
+      // Update description (use longDescription if available, otherwise description)
+      const descriptionText = data.longDescription || data.description
+      if (descriptionText) {
+        updateField('description', descriptionText)
+      }
+      
+      // Update sector/industry from company.industries array
+      if (data.company?.industries && data.company.industries.length > 0) {
+        // Get the primary industry (first one, or the one with highest score)
+        const primaryIndustry = data.company.industries.reduce((prev, current) => 
+          (current.score > prev.score) ? current : prev
+        )
+        updateField('sector', primaryIndustry.name)
+      }
+      
+      // Update website URL to the canonical domain (with https:// prefix)
+      if (data.domain) {
+        const fullUrl = data.domain.startsWith('http') ? data.domain : `https://${data.domain}`
+        updateField('websiteURL', fullUrl.replace(/^https?:\/\//, ''))
+      }
+      
+      // Update address from company location
+      if (data.company?.location) {
+        const location = data.company.location
+        const addressParts = [
+          location.city,
+          location.state,
+          location.country
+        ].filter(Boolean)
+        
+        if (addressParts.length > 0) {
+          updateField('address', addressParts.join(', '))
+        }
+      }
+      
+      // Download and set logo
+      const logoUrl = getBestLogo(data)
+      if (logoUrl) {
+        // Determine file extension from URL
+        const urlExtension = logoUrl.match(/\.(svg|png|webp|jpeg|jpg)(\?|$)/i)?.[1] || 'png'
+        const logoFile = await downloadImageAsFile(logoUrl, `${domain}-logo.${urlExtension}`)
+        if (logoFile) {
+          updateField('logo', logoFile)
+        }
+      }
+      
+      fetchSuccess.value = true
+      
+      toast.add({
+        title: 'Données récupérées !',
+        description: 'Les informations de l\'entreprise ont été automatiquement remplies',
+        color: 'success',
+        icon: 'i-lucide-check-circle'
+      })
+    } else if (brandfetchError.value) {
+      clearFormData()
+      toast.add({
+        title: 'Impossible de récupérer les données',
+        description: brandfetchError.value,
+        color: 'warning',
+        icon: 'i-lucide-info'
+      })
+    }
+  } catch (e) {
+    const error = e as Error
+    clearFormData()
+    toast.add({
+      title: 'Erreur',
+      description: error.message || 'Échec de la récupération des données de l\'entreprise',
+      color: 'error',
+      icon: 'i-lucide-alert-circle'
+    })
+  } finally {
+    isFetching.value = false
+    // Reset success animation after 2 seconds
+    if (fetchSuccess.value) {
+      setTimeout(() => {
+        fetchSuccess.value = false
+      }, 2000)
+    }
+  }
+}
+
+// Computed to check if URL is valid for fetching
+const canFetch = computed(() => {
+  return localData.value.websiteURL && localData.value.websiteURL.length > 3 && !isFetching.value
+})
 </script>
 
 <template>
@@ -42,6 +184,7 @@ const goBack = () => {
         image-type="workspace"
         label="Logo de l'entreprise"
         :model-value="localData.logo"
+        :disabled="isFetching"
         @update:model-value="updateField('logo', $event)"
       />
 
@@ -60,6 +203,7 @@ const goBack = () => {
             placeholder="Renseignez le nom de votre entreprise"
             icon="i-lucide-briefcase"
             class="w-full"
+            :disabled="isFetching"
             @update:model-value="updateField('name', $event)"
           />
         </UFormField>
@@ -74,6 +218,7 @@ const goBack = () => {
             placeholder="Décrivez votre entreprise brièvement:&#10;. Histoire et chiffres clés&#10;. Produits ou services commercialisés&#10;. Culture et valeurs"
             :rows="4"
             class="w-full"
+            :disabled="isFetching"
             @update:model-value="updateField('description', $event)"
           />
         </UFormField>
@@ -83,23 +228,43 @@ const goBack = () => {
           label="Site internet"
           name="websiteURL"
         >
-          <UInput
-            v-model="localData.websiteURL"
-            type="url"
-            placeholder="votre-entreprise.com"
-            class="w-full"
-            :ui="{
-              base: 'pl-18',
-              leading: 'pointer-events-none bg-neutral-50 border border-gray-200 rounded-l-md px-2'
-            }"
-            @update:model-value="updateField('websiteURL', $event)"
-          >
-            <template #leading>
-              <span class="text-sm text-muted">
-                https://
-              </span>
-            </template>
-          </UInput>
+          <div class="flex gap-2 items-center">
+            <div class="flex-1 relative">
+              <UInput
+                ref="urlInputRef"
+                v-model="localData.websiteURL"
+                type="url"
+                placeholder="votre-entreprise.com"
+                class="w-full"
+                :ui="{
+                  base: 'pl-18',
+                  leading: 'pointer-events-none bg-neutral-50 border border-gray-200 rounded-l-md px-2'
+                }"
+                @update:model-value="updateField('websiteURL', $event)"
+                @keydown.enter="handleUrlKeydown"
+              >
+                <template #leading>
+                  <span class="text-sm text-muted">
+                    https://
+                  </span>
+                </template>
+              </UInput>
+            </div>
+            
+            <!-- Loading Indicator -->
+            <Transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-200"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <div v-if="isFetching" class="flex items-center gap-2 text-primary-600">
+                <UIcon name="i-lucide-loader-2" class="w-5 h-5 animate-spin" />
+              </div>
+            </Transition>
+          </div>
         </UFormField>
 
         <!-- Address -->
@@ -111,6 +276,7 @@ const goBack = () => {
             v-model="localData.address"
             placeholder="Renseignez l'adresse du siège de votre entreprise"
             class="w-full"
+            :disabled="isFetching"
             @update:model-value="updateField('address', $event)"
           />
         </UFormField>
@@ -124,6 +290,7 @@ const goBack = () => {
             v-model="localData.sector"
             placeholder="Renseignez le secteur d'activité de votre entreprise"
             class="w-full"
+            :disabled="isFetching"
             @update:model-value="updateField('sector', $event)"
           />
         </UFormField>

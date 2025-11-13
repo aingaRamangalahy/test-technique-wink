@@ -6,12 +6,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/ui'],
   css: ['./app/assets/css/main.css'],
-  // components: [
-  //   {
-  //     path: '~/components',
-  //     pathPrefix: false,
-  //   },
-  // ],
+  runtimeConfig: {
+    public: {
+      brandfetchApiKey: '',
+      brandfetchApiUrl: 'https://api.brandfetch.io/v2/brands'
+    }
+  },
   vite: {
     plugins: [ tailwindcss()]
   },
