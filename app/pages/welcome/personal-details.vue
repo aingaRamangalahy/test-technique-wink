@@ -82,6 +82,7 @@ const isCurrentStepValid = computed(() => {
           v-else-if="currentStep === 1"
           :model-value="formData.workspace"
           @update:model-value="updateWorkspace"
+          @previous="handlePrevious"
         />
         <!-- Navigation -->
         <StepperNavigation

@@ -8,6 +8,7 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits<{
   'update:modelValue': [value: WorkspaceFormData]
+  'previous': []
 }>()
 
 // Local reactive state
@@ -23,11 +24,16 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
   localData.value[field] = value
   emit('update:modelValue', { ...localData.value })
 }
+
+const goBack = () => {
+  emit('previous')
+}
 </script>
 
 <template>
   <UCard :ui="{ root: 'ring-0' }">
     <div class="space-y-6">
+      <UButton label="Retour" variant="ghost" color="neutral" size="sm" icon="i-lucide-chevron-left" @click="goBack" />
       <div class="flex items-center gap-4">
         <p class="text-2xl font-medium">Créez votre espace de travail</p>
       </div>
@@ -54,7 +60,7 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
             placeholder="Renseignez le nom de votre entreprise"
             icon="i-lucide-briefcase"
             class="w-full"
-            @input="updateField('name', localData.name)"
+            @update:model-value="updateField('name', $event)"
           />
         </UFormField>
 
@@ -68,7 +74,7 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
             placeholder="Décrivez votre entreprise brièvement:&#10;. Histoire et chiffres clés&#10;. Produits ou services commercialisés&#10;. Culture et valeurs"
             :rows="4"
             class="w-full"
-            @input="updateField('description', localData.description)"
+            @update:model-value="updateField('description', $event)"
           />
         </UFormField>
 
@@ -86,7 +92,7 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
               base: 'pl-18',
               leading: 'pointer-events-none bg-neutral-50 border border-gray-200 rounded-l-md px-2'
             }"
-            @input="updateField('websiteURL', localData.websiteURL)"
+            @update:model-value="updateField('websiteURL', $event)"
           >
             <template #leading>
               <span class="text-sm text-muted">
@@ -105,7 +111,7 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
             v-model="localData.address"
             placeholder="Renseignez l'adresse du siège de votre entreprise"
             class="w-full"
-            @input="updateField('address', localData.address)"
+            @update:model-value="updateField('address', $event)"
           />
         </UFormField>
 
@@ -118,7 +124,7 @@ const updateField = <K extends keyof WorkspaceFormData>(field: K, value: Workspa
             v-model="localData.sector"
             placeholder="Renseignez le secteur d'activité de votre entreprise"
             class="w-full"
-            @input="updateField('sector', localData.sector)"
+            @update:model-value="updateField('sector', $event)"
           />
         </UFormField>
       </div>

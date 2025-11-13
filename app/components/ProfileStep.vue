@@ -55,7 +55,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
             v-model="localData.firstName"
             placeholder="Entrez votre prénom"
             class="w-full"
-            @input="updateField('firstName', localData.firstName)"
+            @update:model-value="updateField('firstName', $event)"
           />
         </UFormField>
 
@@ -68,7 +68,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
             v-model="localData.lastName"
             placeholder="Entrez votre nom"
             class="w-full"
-            @input="updateField('lastName', localData.lastName)"
+            @update:model-value="updateField('lastName', $event)"
           />
         </UFormField>
 
@@ -82,7 +82,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
             placeholder="Renseignez votre adresse email"
             icon="i-lucide-mail"
             class="w-full"
-            @input="updateField('email', localData.email)"
+            @update:model-value="updateField('email', $event)"
           />
         </UFormField>
       </div>

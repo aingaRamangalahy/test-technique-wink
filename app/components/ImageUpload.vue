@@ -18,7 +18,6 @@ const displayName = ref(props.userName ?? '')
 watch(
   () => props.userName,
   (newName) => {
-    console.log("new name", newName)
     displayName.value = newName ?? ''
   },
   { immediate: true }
