@@ -29,6 +29,15 @@ const goBack = () => {
   emit('previous')
 }
 
+// Validation state
+const nameTouched = ref(false)
+const nameError = computed(() => {
+  if (!nameTouched.value) return undefined
+  return !localData.value.name || localData.value.name.trim() === '' 
+    ? 'Le nom de l\'entreprise est requis' 
+    : undefined
+})
+
 // Brandfetch integration
 const { fetchCompanyData, downloadImageAsFile, getBestLogo, extractDomain, error: brandfetchError } = useBrandfetch()
 const toast = useToast()
@@ -51,6 +60,7 @@ const clearFormData = () => {
   updateField('sector', '')
   updateField('logo', null)
   updateField('websiteURL', currentUrl)
+  nameTouched.value = false
 }
 
 const fetchBrandData = async () => {
@@ -194,6 +204,7 @@ const canFetch = computed(() => {
         <UFormField
           label="Nom de l'entreprise"
           name="name"
+          :error="nameError"
           :ui="{
             label: 'after:content-[\'*\'] after:ml-1 after:text-neutral-700'
           }"
@@ -204,7 +215,9 @@ const canFetch = computed(() => {
             icon="i-lucide-briefcase"
             class="w-full"
             :disabled="isFetching"
+            required
             @update:model-value="updateField('name', $event)"
+            @blur="nameTouched = true"
           />
         </UFormField>
 

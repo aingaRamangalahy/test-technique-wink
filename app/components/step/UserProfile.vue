@@ -27,6 +27,24 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
   localData.value[field] = value
   emit('update:modelValue', { ...localData.value })
 }
+
+// Email validation
+const emailTouched = ref(false)
+const emailError = computed(() => {
+  if (!emailTouched.value) return undefined
+  
+  const email = localData.value.email?.trim()
+  
+  // Only validate format if email is provided (not required)
+  if (email && email.length > 0) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return 'Veuillez entrer une adresse email valide'
+    }
+  }
+  
+  return undefined
+})
 </script>
 
 <template>
@@ -75,6 +93,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
         <UFormField
           label="Adresse email"
           name="email"
+          :error="emailError"
         >
           <UInput
             v-model="localData.email"
@@ -83,6 +102,7 @@ const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFo
             icon="i-lucide-mail"
             class="w-full"
             @update:model-value="updateField('email', $event)"
+            @blur="emailTouched = true"
           />
         </UFormField>
       </div>
